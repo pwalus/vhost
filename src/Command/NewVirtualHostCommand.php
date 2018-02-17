@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Core\MagentoVHost;
+use App\Core\ServerFactory;
 use App\Manager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,16 +24,20 @@ class NewVirtualHostCommand extends Command
     {
         $this->setName('create')
             ->setDescription('Create new virtual host.')
-//            ->addArgument('type', InputArgument::REQUIRED, 'Type of virtual host')
-            ->addArgument('name', InputArgument::REQUIRED, 'Name of virtual host');
+            ->addArgument('serverType', InputArgument::REQUIRED, 'Type of server')
+            ->addArgument('hostType', InputArgument::REQUIRED, 'Type of virtual host')
+            ->addArgument('hostName', InputArgument::REQUIRED, 'Name of virtual host');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         Manager::setStream($input, $output);
-        $name = Manager::getInput()->getArgument('name');
-        $virtualHost = new MagentoVHost($name);
-        $virtualHost->addHost();
+        $serverType = Manager::getInput()->getArgument('serverType');
+        $hostType = Manager::getInput()->getArgument('hostType');
+        $hostName = Manager::getInput()->getArgument('hostName');
+
+        $server = ServerFactory::createServer($serverType, $hostType, $hostName);
+        $server->createVirtualHost();
     }
 
 }
