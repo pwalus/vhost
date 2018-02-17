@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace App\Core\Servers;
 
+use App\Cleaner;
+use App\Manager;
 use Exception;
 
 class Nginx extends AbstractServer
@@ -33,6 +35,33 @@ class Nginx extends AbstractServer
         $enabledSrc = self::CONFIG_ENABLED_PATH . $this->hostName . '.conf';
 
         $this->checkIfCanCreateConfig($availableSrc, $enabledSrc);
+        $this->createConfigFile($availableSrc);
+        $this->createSymlink($availableSrc, $enabledSrc);
+    }
+
+    /**
+     * @param string $availableSrc
+     * @param string $enabledSrc
+     * @throws Exception
+     */
+    protected function checkIfCanCreateConfig(string $availableSrc, string $enabledSrc)
+    {
+        Manager::logComment("Checking if can create new config file...");
+        if (file_exists($availableSrc)) {
+            throw new Exception(sprintf('Cannot create config file %s, already exists!', $availableSrc));
+        }
+        if (file_exists($enabledSrc)) {
+            throw new Exception(sprintf('Cannot create config file %s, already exists!', $enabledSrc));
+        }
+    }
+
+    /**
+     * @param $availableSrc
+     * @throws Exception
+     */
+    protected function createConfigFile($availableSrc)
+    {
+        Manager::logComment("Creating new config file...");
 
         $config = preg_replace(
             '/&&hostname&&/',
@@ -44,22 +73,7 @@ class Nginx extends AbstractServer
             throw new Exception('Something bad happened. Cannot create config file');
         }
 
-        $this->createSymlink($availableSrc, $enabledSrc);
-    }
-
-    /**
-     * @param string $availableSrc
-     * @param string $enabledSrc
-     * @throws Exception
-     */
-    protected function checkIfCanCreateConfig(string $availableSrc, string $enabledSrc)
-    {
-        if (file_exists($availableSrc)) {
-            throw new Exception(sprintf('Cannot create config file %s, already exists!', $availableSrc));
-        }
-        if (file_exists($enabledSrc)) {
-            throw new Exception(sprintf('Cannot create config file %s, already exists!', $enabledSrc));
-        }
+        Cleaner::setCleanData(Cleaner::CONFIG_FILE);
     }
 
     /**
@@ -69,9 +83,12 @@ class Nginx extends AbstractServer
      */
     protected function createSymlink(string $availableSrc, string $enabledSrc)
     {
+        Manager::logComment("Creating symlink...");
         if (symlink($availableSrc, $enabledSrc) === false) {
             throw new Exception('Cannot create symlink for config file');
         }
+
+        Cleaner::setCleanData(Cleaner::SYMLINK);
     }
 
 }

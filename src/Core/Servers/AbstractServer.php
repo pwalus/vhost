@@ -9,14 +9,13 @@ declare(strict_types=1);
 
 namespace App\Core\Servers;
 
+use App\Cleaner;
 use App\Core\HostFile;
 use App\Manager;
 use Exception;
 
 abstract class AbstractServer
 {
-    const RELATIVE_PATH = '../../../resource/';
-
     protected $configFiles = [];
 
     protected $hostType;
@@ -34,17 +33,23 @@ abstract class AbstractServer
         try {
             HostFile::addLineToHostFile($this->hostName);
             $this->createConfig();
+            Manager::logInfo(sprintf("Hostname: %s created", $this->hostName));
         } catch (Exception $exception) {
             Manager::logError($exception->getMessage());
+            Cleaner::clean();
             die();
         }
     }
 
-
     protected function getConfigDependsOnType(): string
     {
         if (isset($this->configFiles[$this->hostType])) {
-            return self::RELATIVE_PATH . $this->configFiles[$this->hostType];
+            $src = PROJECT_PATH . 'resource/' . $this->configFiles[$this->hostType];
+            if (file_exists($src)) {
+                return $src;
+            }
+
+            throw new \InvalidArgumentException(sprintf('Cannot find file %s', $src));
         }
 
         throw new \InvalidArgumentException(sprintf('There is not defined host type as %s', $this->hostType));

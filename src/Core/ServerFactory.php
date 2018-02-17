@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Cleaner;
 use App\Core\Servers\AbstractServer;
 use App\Core\Servers\Nginx;
 
@@ -21,6 +22,8 @@ abstract class ServerFactory
 
     public static function createServer(string $serverType, string $hostType, string $hostName): AbstractServer
     {
+        Cleaner::setHostName($hostName);
+
         if (isset(self::$servers[$serverType])) {
             return new self::$servers[$serverType]($hostType, $hostName);
         }
