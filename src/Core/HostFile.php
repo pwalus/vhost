@@ -23,7 +23,8 @@ final class HostFile
      */
     public static function addLineToHostFile(string $hostName)
     {
-        Manager::logComment("Checking if can add line to host file...");
+        Manager::logComment("" .
+            " add line to host file...");
         self::checkIfCanAddLineToHost($hostName);
 
         Manager::logComment(sprintf("Adding new line to host file..."));

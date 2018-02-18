@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Cleaners\ConfigClean;
+use App\Cleaners\FolderClean;
 use App\Cleaners\HostClean;
 use App\Cleaners\SymlinkClean;
 
@@ -53,9 +54,9 @@ class Cleaner
             $cleanObjects[] = new SymlinkClean(self::$hostName);
         }
 
-//        if (in_array(self::FOLDER, self::$cleanData)) {
-//            $cleanObjects = new HostClean();
-//        }
+        if (in_array(self::FOLDER, self::$cleanData)) {
+            $cleanObjects = new FolderClean(self::$folderName);
+        }
 
         return $cleanObjects;
     }
@@ -65,9 +66,13 @@ class Cleaner
         self::$cleanData[] = $cleanData;
     }
 
-    public static function setHostName(string $hostName, $folderName)
+    public static function setHostName(string $hostName)
     {
         self::$hostName = $hostName;
+    }
+
+    public static function setFolderName(string $folderName)
+    {
         self::$folderName = $folderName;
     }
 

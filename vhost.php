@@ -6,7 +6,8 @@ use Symfony\Component\Console\Application;
 
 require 'vendor/autoload.php';
 
-define('PROJECT_PATH', '/Users/patrykwalus/Commands/vhost/');
+define('ROOT_PATH', '/Users/patrykwalus/Commands/vhost/');
+define('PROJECT_PATH', '/Users/patrykwalus/Sites/');
 
 try {
     $app = new Application('Create new Virtual Host', '1.0');

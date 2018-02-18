@@ -11,6 +11,7 @@ namespace App\Core\Servers;
 
 use App\Cleaner;
 use App\Core\HostFile;
+use App\Core\Project;
 use App\Manager;
 use Exception;
 
@@ -29,6 +30,7 @@ abstract class AbstractServer
         try {
             HostFile::addLineToHostFile($this->hostName);
             $this->createConfig();
+            Project::createFolder($this->folderName);
             Manager::logInfo(sprintf("Hostname: %s created", $this->hostName));
         } catch (Exception $exception) {
             Manager::logError($exception->getMessage());
@@ -40,7 +42,7 @@ abstract class AbstractServer
     protected function getConfigDependsOnType(): string
     {
         if (isset($this->configFiles[$this->hostType])) {
-            $src = PROJECT_PATH . 'resource/' . $this->configFiles[$this->hostType];
+            $src = ROOT_PATH . 'resource/' . $this->configFiles[$this->hostType];
             if (file_exists($src)) {
                 return $src;
             }
@@ -64,11 +66,13 @@ abstract class AbstractServer
     public function setHostName(string $hostName)
     {
         $this->hostName = $hostName;
+        Cleaner::setHostName($hostName);
     }
 
     public function setFolderName(string $folderName)
     {
         $this->folderName = $folderName;
+        Cleaner::setFolderName($folderName);
     }
 
     protected abstract function createConfig();
