@@ -22,11 +22,7 @@ abstract class AbstractServer
 
     protected $hostName;
 
-    public function __construct(string $hostType, string $hostName)
-    {
-        $this->hostType = $hostType;
-        $this->hostName = $hostName;
-    }
+    protected $folderName;
 
     public function createVirtualHost()
     {
@@ -53,6 +49,26 @@ abstract class AbstractServer
         }
 
         throw new \InvalidArgumentException(sprintf('There is not defined host type as %s', $this->hostType));
+    }
+
+    public function getConfigFiles(): array
+    {
+        return $this->configFiles;
+    }
+
+    public function setHostType(string $hostType)
+    {
+        $this->hostType = $hostType;
+    }
+
+    public function setHostName(string $hostName)
+    {
+        $this->hostName = $hostName;
+    }
+
+    public function setFolderName(string $folderName)
+    {
+        $this->folderName = $folderName;
     }
 
     protected abstract function createConfig();

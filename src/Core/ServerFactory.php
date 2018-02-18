@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-use App\Cleaner;
 use App\Core\Servers\AbstractServer;
 use App\Core\Servers\Nginx;
 
@@ -20,15 +19,18 @@ abstract class ServerFactory
         'nginx' => Nginx::class,
     ];
 
-    public static function createServer(string $serverType, string $hostType, string $hostName): AbstractServer
+    public static function createServer(string $serverType): AbstractServer
     {
-        Cleaner::setHostName($hostName);
-
         if (isset(self::$servers[$serverType])) {
-            return new self::$servers[$serverType]($hostType, $hostName);
+            return new self::$servers[$serverType]();
         }
 
         throw new \InvalidArgumentException(sprintf('There is not defined server as %s', $serverType));
+    }
+
+    public static function getServers(): array
+    {
+        return self::$servers;
     }
 
 }

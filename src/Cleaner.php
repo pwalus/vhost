@@ -26,6 +26,8 @@ class Cleaner
 
     protected static $hostName;
 
+    protected static $folderName;
+
     protected static $cleanData = [];
 
     public static function clean()
@@ -63,9 +65,10 @@ class Cleaner
         self::$cleanData[] = $cleanData;
     }
 
-    public static function setHostName(string $hostName)
+    public static function setHostName(string $hostName, $folderName)
     {
         self::$hostName = $hostName;
+        self::$folderName = $folderName;
     }
 
 }
