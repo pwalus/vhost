@@ -69,6 +69,12 @@ class Nginx extends AbstractServer
             file_get_contents($this->getConfigDependsOnType())
         );
 
+        $config = preg_replace(
+            '/&&foldername&&/',
+            $this->folderName,
+            $config
+        );
+
         if (file_put_contents($availableSrc, $config) === false) {
             throw new Exception('Something bad happened. Cannot create config file');
         }

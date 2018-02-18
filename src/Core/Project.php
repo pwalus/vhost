@@ -25,13 +25,15 @@ final class Project
     {
         self::$src = PROJECT_PATH . $folderName;
 
-        Manager::logComment("Checking if can create project folder...");
+        Manager::logComment("Checking if can create folder for project...");
         self::checkIfCanCreateFolder();
 
         Manager::logComment(sprintf("Creating new folder for project..."));
         if (mkdir(self::$src) === false) {
             throw new Exception('Something bad happened. Cannot create project folder');
         }
+
+        file_put_contents(self::$src . '/index.php', '<?php phpinfo(); ?>');
 
         Cleaner::setCleanData(Cleaner::FOLDER);
     }
@@ -43,10 +45,6 @@ final class Project
     {
         if (file_exists(self::$src)) {
             throw new Exception(sprintf('Already exists: %', self::$src));
-        }
-
-        if (! is_writable(self::$src)) {
-            throw new Exception('Cannot access project folder! Run command with sudo');
         }
     }
 

@@ -55,7 +55,7 @@ class Cleaner
         }
 
         if (in_array(self::FOLDER, self::$cleanData)) {
-            $cleanObjects = new FolderClean(self::$folderName);
+            $cleanObjects[] = new FolderClean(self::$folderName);
         }
 
         return $cleanObjects;

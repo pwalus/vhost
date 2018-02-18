@@ -40,6 +40,8 @@ class NewVirtualHostCommand extends Command
         $server->setHostName($hostName);
         $server->setFolderName($folderName);
         $server->createVirtualHost();
+
+        Manager::logInfo('New Virtual Host configuration created successfully! Open in browser: ' . $hostName);
     }
 
     protected function getServerType(InputInterface $input, OutputInterface $output): string
@@ -78,7 +80,7 @@ class NewVirtualHostCommand extends Command
     {
         $helper = $this->getHelper('question');
         $question = new Question(
-            '<info>Please enter the name of the project folder: </info><comment>[' . $hostName . ']</comment>',
+            '<info>Please enter the name of the project folder: </info><comment>[' . $hostName . ']</comment> ',
             $hostName
         );
 
