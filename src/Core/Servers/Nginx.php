@@ -21,7 +21,7 @@ class Nginx extends AbstractServer
 
     protected $configFiles = [
         'magento' => 'magento.conf',
-        'magento2' => 'magento.conf',
+        'magento2' => 'magento2.conf',
         'pimcore' => 'pimcore.conf',
         'symfony' => 'symfony.conf',
     ];
